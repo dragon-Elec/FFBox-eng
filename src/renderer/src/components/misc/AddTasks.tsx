@@ -1,4 +1,5 @@
-import { computed, defineComponent, defineExpose, onMounted, ref } from "vue";
+import { computed, defineComponent, onMounted, ref } from "vue";
+import { useI18n } from "vue-i18n";
 import nodeBridge from "@renderer/bridges/nodeBridge";
 import { useAppStore } from "@renderer/stores/appStore";
 // import RadioList, { Props as RadioListProps } from '@renderer/containers/MainFrame/MainArea/ParaBox/components/RadioList.vue';
@@ -15,25 +16,27 @@ import Popup from "../Popup/Popup";
 export function showAddTaskPrompt(initialValue?: string) {
 	let compFuncs: any;
 	const appStore = useAppStore();
+	const { t } = useI18n(); // Get t function here
     Msgbox({
 		container: document.body,
-		title: '添加任务',
+		title: t('addTasks.title'),
 		content: <Comp exportFunctions={(fs) => compFuncs = fs} initialValue={initialValue} />,
 		buttons: [
-			{ text: '好', role: 'confirm', type: ButtonType.Primary, callback: async () => {
+			{ text: t('addTasks.confirm'), role: 'confirm', type: ButtonType.Primary, callback: async () => {
 				const result = await compFuncs.exportData();
 				// console.log(result);
 				appStore.addTasks(result);
 			} },
-			{ text: '取消', role: 'cancel' },
+			{ text: t('addTasks.cancel'), role: 'cancel' },
 		]
 	});
 }
 interface P {
-	initialValue: string;
+	initialValue?: string; // Made initialValue optional to match onMounted logic
     exportFunctions: (fs: any) => void;
 }
 const Comp = defineComponent((props: P) => {
+	const { t, n } = useI18n();
 	const appStore = useAppStore();
 	const text = ref('');
 	const computing = ref(0);	// 0：空闲　负随机数：正在计算　正整数：等待下一次触发计算的计时器序号
@@ -49,20 +52,25 @@ const Comp = defineComponent((props: P) => {
 
 	const statsText = computed(() => {
 		if (confirming.value) {
-			return '正在展开路径';
+			return t('addTasks.expandingPaths');
 		} else if (computing.value) {
-			return '正在统计中';
+			return t('addTasks.calculating');
 		} else {
-			// const lf = categorized.value.localFiles.length;
-			// const ld = categorized.value.localDirs.length;
-			// const r = categorized.value.remotes.length;
-			// const u = categorized.value.unknowns.length;
 			const { localFilesCount: lf, localDirsCount: ld, remotesCount: r, unknownsCount: u } = categorized.value;
 			if (lf + ld + r + u === 0) {
-				return '您未填入文件';
+				return t('addTasks.noFiles');
 			} else {
-				return `您已填入${lf ? ` ${lf} 个本地${window.jsb ? '文件' : '路径'}，` : ''}${ld ? ` ${ld} 个本地文件夹，` : ''}${r ? ` ${r} 个远程路径，` : ''}${u ? ` ${u} 个未知文件，` : ''}`.slice(0, -1) +
-						(appStore.functionLevel < 40 ? '。（上限 66 个）' : appStore.functionLevel < 60 ? '。（上限 99 个）' : '');
+				const platformPath = window.jsb ? t('addTasks.statsLocalFiles', { count: lf, platformPath: '文件' }) : t('addTasks.statsLocalFiles', { count: lf, platformPath: '路径' });
+				const platformPathPlural = window.jsb ? t('addTasks.statsLocalFiles_plural', { count: lf, platformPathPlural: '文件' }) : t('addTasks.statsLocalFiles_plural', { count: lf, platformPathPlural: '路径' });
+
+				const parts = {
+					localFiles: lf ? (lf > 1 ? platformPathPlural : platformPath) : '',
+					localDirs: ld ? (ld > 1 ? t('addTasks.statsLocalDirs_plural', { count: ld }) : t('addTasks.statsLocalDirs', { count: ld })) : '',
+					remoteUrls: r ? (r > 1 ? t('addTasks.statsRemoteUrls_plural', { count: r }) : t('addTasks.statsRemoteUrls', { count: r })) : '',
+					unknownFiles: u ? (u > 1 ? t('addTasks.statsUnknownFiles_plural', { count: u }) : t('addTasks.statsUnknownFiles', { count: u })) : '',
+				};
+				const limitHint = appStore.functionLevel < 40 ? t('addTasks.limitHint66') : appStore.functionLevel < 60 ? t('addTasks.limitHint99') : '';
+				return t('addTasks.stats', parts) + limitHint;
 			}
 		}
 	});
@@ -117,7 +125,7 @@ const Comp = defineComponent((props: P) => {
 		let newPaths: string[] = [];
 		if (event.dataTransfer?.files?.length) {
 			if (nodeBridge.env === 'browser') {
-				Popup({ message: '网页版无法将文件拖入文本框，请直接将文件拖入任务列表进行上传😊' });
+				Popup({ message: t('addTasks.browserDropHint') });
 			}
 			for (const file of event.dataTransfer?.files || []) {
 				newPaths.push(file.path);
@@ -137,13 +145,13 @@ const Comp = defineComponent((props: P) => {
 
 	const exports = {
 		exportData: async () => {
-			inputRef.value.disabled = true;
+			inputRef.value!.disabled = true;
 			confirming.value = true;
 			while (computing.value) {
-				// console.log('等待统计');
+				// console.log(t('addTasks.waitingForStats'));
 				await new Promise((resolve) => { setTimeout(resolve, 100)});	// 循环等待，哈哈，简单方便快捷
 			}
-			// console.log('开始遍历');
+			// console.log(t('addTasks.iteratingPaths'));
 			const finalList: string[] = [];
 			const lines = text.value.split('\n').filter((line) => line !== '');
 			for (let i = 0; i < lines.length; i++) {
@@ -161,7 +169,7 @@ const Comp = defineComponent((props: P) => {
 
     onMounted(() => {
 		text.value = (props.initialValue ?? '').replaceAll('\r\n', '\n');
-		inputRef.value.value = text.value;
+		inputRef.value!.value = text.value; // Added non-null assertion
 		handleTextInputAndCategorize();
         props.exportFunctions(exports);
     });
@@ -170,9 +178,9 @@ const Comp = defineComponent((props: P) => {
 		<div class={style.container}>
 			<div class={style.line1}>
 				{nodeBridge.env === 'electron' ? (
-					<Button type={ButtonType.Primary} onClick={handleAddFilesButtonClick}>添加文件</Button> 
+					<Button type={ButtonType.Primary} onClick={handleAddFilesButtonClick}>{t('addTasks.addFilesButton')}</Button>
 				) : (
-					<i>此输入框仅用于直接控制服务器进行任务添加<br/>若需处理本地文件请从菜单选择「任务」→「添加任务（选择文件）」</i>
+					<i domPropsInnerHTML={t('addTasks.electronInputHint')}></i>
 				)}
 				<span>{statsText.value}</span>
 			</div>

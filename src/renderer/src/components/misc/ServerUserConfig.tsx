@@ -1,4 +1,5 @@
 import { defineComponent, onMounted, ref } from "vue";
+import { useI18n } from "vue-i18n";
 import CryptoJS from 'crypto-js';
 import { Server } from "@renderer/types";
 import { useAppStore } from "@renderer/stores/appStore";
@@ -14,13 +15,16 @@ import { randomString } from "@common/utils";
 export function showServerUserConfig(serverId: string) {
 	let compFuncs: any;
 	const appStore = useAppStore();
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	(document.activeElement as any)?.blur();
+	const { t } = useI18n();
+
 	Msgbox({
 		container: document.body,
-		title: '本地服务器用户配置',
+		title: t('serverUserConfig.title'),
 		content: <Comp exportFunctions={(fs) => compFuncs = fs} serverId={serverId} />,
 		buttons: [
-			{ text: '保存', role: 'confirm', type: ButtonType.Primary, callback: async () => {
+			{ text: t('serverUserConfig.save'), role: 'confirm', type: ButtonType.Primary, callback: async () => {
 				const result = await compFuncs.exportData();
 				const { users } = result;
 				nodeBridge.localConfig.set('service.users', users);
@@ -30,16 +34,18 @@ export function showServerUserConfig(serverId: string) {
 					server.entity.initSettings();
 				}, 40);
 			} },
-			{ text: '取消', role: 'cancel' },
+			{ text: t('serverUserConfig.cancel'), role: 'cancel' },
 		]
 	});
 }
 
 interface P {
 	serverId: string;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	exportFunctions: (fs: any) => void;
 }
 const Comp = defineComponent((props: P) => {
+	const { t } = useI18n();
 	const usersValue = ref<{ username: string; passkey: string; maxFunctionLevel: number }[]>([]);
 	const editingLineIndex = ref<number>(NaN);
 	const editingAttr = ref<'username' | 'passkey' | 'maxFunctionLevel' | undefined>();
@@ -123,10 +129,10 @@ const Comp = defineComponent((props: P) => {
 				</colgroup>
 				<thead>
 					<tr>
-						<th>用户名</th>
-						<th>密码</th>
-						<th>最高用户等级</th>
-						<th>操作</th>
+						<th>{t('serverUserConfig.username')}</th>
+						<th>{t('serverUserConfig.password')}</th>
+						<th>{t('serverUserConfig.maxLevel')}</th>
+						<th>{t('serverUserConfig.actions')}</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -144,7 +150,7 @@ const Comp = defineComponent((props: P) => {
 								user.username ? (
 									<td class={style.editable} onClick={() => handleEdit(lineIndex, 'username')}>{user.username}</td>
 								) : (
-									<td><font {...useTooltip('仅在本地模式下可以空账号登录。空账号即为管理员', 't')} style={{ opacity: 0.5 }}>（管理员空账号）</font></td>
+									<td><font {...useTooltip(t('serverUserConfig.adminTooltip'), 't')} style={{ opacity: 0.5 }}>{t('serverUserConfig.adminHint')}</font></td>
 								)
 							)}
 							{editingLineIndex.value === lineIndex && editingAttr.value === 'passkey' ? (
@@ -157,7 +163,7 @@ const Comp = defineComponent((props: P) => {
 								</td>
 							) : (
 								<td onClick={() => handleEdit(lineIndex, 'passkey')}>
-									{user.passkey ? <a class={style.editable}>更改</a> : <a class={style.editable}>　+　</a>}
+									{user.passkey ? <a class={style.editable}>{t('serverUserConfig.change')}</a> : <a class={style.editable} domPropsInnerHTML={t('serverUserConfig.add')}></a>}
 								</td>
 							)}
 							{editingLineIndex.value === lineIndex && editingAttr.value === 'maxFunctionLevel' ? (
@@ -170,19 +176,19 @@ const Comp = defineComponent((props: P) => {
 								</td>
 							) : (
 								user.username ? (
-									<td class={style.editable} {...useTooltip('决定用户可用的功能范围。大于服务器自身等级的数字表示可使用服务器支持的全部功能范围。目前此功能无用', 't')} onClick={() => handleEdit(lineIndex, 'maxFunctionLevel')}>{user.maxFunctionLevel}</td>
+									<td class={style.editable} {...useTooltip(t('serverUserConfig.levelTooltip'), 't')} onClick={() => handleEdit(lineIndex, 'maxFunctionLevel')}>{user.maxFunctionLevel}</td>
 								) : (
 									<td>{user.maxFunctionLevel}</td>
 								)
 							)}
 							<td>
-								{user.username ? <a class={style.editable} onClick={() => handleDelete(lineIndex)}>删除</a> : ''}
+								{user.username ? <a class={style.editable} onClick={() => handleDelete(lineIndex)}>{t('serverUserConfig.delete')}</a> : ''}
 							</td>
 						</tr>
 					))}
 				</tbody>
 			</table>
-			<Button onClick={() => handleAddUser()}>添加用户</Button>
+			<Button onClick={() => handleAddUser()}>{t('serverUserConfig.addUser')}</Button>
 		</div>
 	);
 }, { props: ['serverId', 'exportFunctions'] });

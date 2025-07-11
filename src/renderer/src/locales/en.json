@@ -1,0 +1,94 @@
+{
+  "sidebar": {
+    "quick": "Quick",
+    "input": "Input",
+    "video": "Video",
+    "audio": "Audio",
+    "effect": "Effect",
+    "output": "Output"
+  },
+  "globalParams": "Global Parameters",
+  "showGlobalParams": "Toggle Global Parameters",
+  "serverConfig": {
+    "title": "Local Server Configuration",
+    "maxTasks": "Concurrent Transcoding Tasks",
+    "maxTasksTooltip": "After starting the transcoding queue, all unfinished tasks will be queued, and the foremost tasks will run continuously. The number of concurrently running tasks is controlled by this setting.",
+    "maxTasksTooltipWithLimit": "After starting the transcoding queue, all unfinished tasks will be queued, and the foremost tasks will run continuously. The number of concurrently running tasks is controlled by this setting (Your user level supports a maximum of {limit} concurrent tasks).",
+    "preserveTasks": "Preserve Unfinished Tasks",
+    "preserveTasksTooltip": "If the transcoding service exits unexpectedly, unfinished tasks during transcoding will be automatically restored to the task list the next time it runs.",
+    "ffmpegPath": "FFmpeg Path",
+    "ffmpegPathPlaceholder": "Leave blank for auto-detection",
+    "ffmpegPathTooltip": "The rules for valid paths depend on the operating system. If left blank, FFBox will automatically check the FFmpeg location based on the OS.",
+    "userConfig": "User Configuration",
+    "save": "Save",
+    "cancel": "Cancel"
+  },
+  "titlebar": {
+    "serverConfig": "Server Configuration",
+    "notConnected": "Not Connected",
+    "disconnectAndClose": "Disconnect and Close",
+    "close": "Close"
+  },
+  "app": {
+    "welcomeMessage": "Welcome to FFBox {version}!"
+  },
+  "addTasks": {
+    "title": "Add Tasks",
+    "confirm": "OK",
+    "cancel": "Cancel",
+    "expandingPaths": "Expanding paths...",
+    "calculating": "Calculating...",
+    "noFiles": "You haven't entered any files.",
+    "stats": "You have entered{localFiles}{localDirs}{remoteUrls}{unknownFiles}.",
+    "statsLocalFiles": " {count} local {platformPath}",
+    "statsLocalFiles_plural": " {count} local {platformPathPlural}",
+    "statsLocalDirs": " {count} local folder",
+    "statsLocalDirs_plural": " {count} local folders",
+    "statsRemoteUrls": " {count} remote URL",
+    "statsRemoteUrls_plural": " {count} remote URLs",
+    "statsUnknownFiles": " {count} unknown file",
+    "statsUnknownFiles_plural": " {count} unknown files",
+    "limitHint66": " (Up to 66 items)",
+    "limitHint99": " (Up to 99 items)",
+    "addFilesButton": "Add Files",
+    "browserDropHint": "The web version cannot drag files into the text box. Please drag files directly into the task list to upload. 😊",
+    "electronInputHint": "This input box is only for directly controlling the server to add tasks.\nIf you need to process local files, please select 'Task' -> 'Add Tasks (Select Files)' from the menu.",
+    "waitingForStats": "Waiting for statistics...",
+    "iteratingPaths": "Iterating paths..."
+  },
+  "envInfo": {
+    "title": "Version Information",
+    "close": "Close",
+    "frontendVersion": "Frontend Version: {version}",
+    "frontendEnv": "Frontend OS Environment: {platform}",
+    "frontendEngine": "Frontend Engine Environment: {engine}",
+    "backendConnectionType": "Current Backend Connection Type: {type}",
+    "connectionTypeLocal": "Local",
+    "connectionTypeRemote": "Remote",
+    "backendVersion": "Current Backend Version: {version}",
+    "backendEnv": "Current Backend OS Environment: {os}",
+    "backendFFmpeg": "Current Backend FFmpeg: {version}{encoders}",
+    "scanningEncoders": "(Scanning encoders...)",
+    "encoderStats": "({videoCount} video encoders, {audioCount} audio encoders)"
+  },
+  "rateControlDoc": {
+    "title": "📚 FFBox Local Knowledge Base",
+    "close": "Close"
+  },
+  "serverUserConfig": {
+    "title": "Local Server User Configuration",
+    "save": "Save",
+    "cancel": "Cancel",
+    "username": "Username",
+    "password": "Password",
+    "maxLevel": "Max User Level",
+    "actions": "Actions",
+    "adminHint": "(Admin empty account)",
+    "adminTooltip": "Only in local mode can you log in with an empty account. An empty account is an administrator.",
+    "change": "Change",
+    "add": "Add",
+    "levelTooltip": "Determines the range of functions available to the user. A number greater than the server's own level means that the full range of functions supported by the server can be used. This feature is currently useless.",
+    "delete": "Delete",
+    "addUser": "Add User"
+  }
+}

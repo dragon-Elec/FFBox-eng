@@ -1,4 +1,5 @@
 import { Fragment, h } from "vue";
+import { useI18n } from "vue-i18n";
 import { version } from "@common/constants";
 import { useAppStore } from "@renderer/stores/appStore";
 import { ServiceBridgeStatus } from "@renderer/bridges/serviceBridge";
@@ -7,33 +8,42 @@ import nodeBridge from "@renderer/bridges/nodeBridge";
 
 export function showEnvironmentInfo() {
     const appStore = useAppStore();
+    const { t } = useI18n();
     const backendInfo = [];
-    const ffmpegEncoderInfo = appStore.currentServer.data.ffmpegInfo.version ? (appStore.currentServer.data.ffmpegInfo.scanning ? '（正在扫描编码器）' : `（${appStore.currentServer.data.ffmpegInfo.videoEncodersCount} 个视频编码器，${appStore.currentServer.data.ffmpegInfo.audioEncodersCount} 个音频编码器）`) : '';
+
+    const ffmpegEncoderInfo = appStore.currentServer.data.ffmpegInfo.version
+        ? (appStore.currentServer.data.ffmpegInfo.scanning
+            ? t('envInfo.scanningEncoders')
+            : t('envInfo.encoderStats', { videoCount: appStore.currentServer.data.ffmpegInfo.videoEncodersCount, audioCount: appStore.currentServer.data.ffmpegInfo.audioEncodersCount }))
+        : '';
+
     if (appStore.currentServer?.entity.status === ServiceBridgeStatus.Connected) {
+        const connectionType = appStore.currentServer.entity.ip === 'localhost' ? t('envInfo.connectionTypeLocal') : t('envInfo.connectionTypeRemote');
         backendInfo.push(
-            `当前后端连接形式：${appStore.currentServer.entity.ip === 'localhost' ? '本地' : '远程'}`,
+            t('envInfo.backendConnectionType', { type: connectionType }),
             h('br'),
-            `当前后端版本：${appStore.currentServer.data.version}`,
+            t('envInfo.backendVersion', { version: appStore.currentServer.data.version }),
             h('br'),
-            `当前后端 OS 环境：${appStore.currentServer.data.os}`,
+            t('envInfo.backendEnv', { os: appStore.currentServer.data.os }),
             h('br'),
-            `当前后端 ffmpeg：${appStore.currentServer.data.ffmpegInfo.version}${ffmpegEncoderInfo}`,
-        )
+            t('envInfo.backendFFmpeg', { version: appStore.currentServer.data.ffmpegInfo.version, encoders: ffmpegEncoderInfo }),
+        );
     }
+
     Msgbox({
         container: document.body,
-        title: '版本信息',
+        title: t('envInfo.title'),
         content: h(Fragment, [
-            `前端版本：${version}`,
+            t('envInfo.frontendVersion', { version }),
             h('br'),
-            `前端 OS 环境：${navigator.platform}`,
+            t('envInfo.frontendEnv', { platform: navigator.platform }),
             h('br'),
-            `前端引擎环境：${nodeBridge.env === 'electron' ? 'electron' : navigator.userAgent}`,
+            t('envInfo.frontendEngine', { engine: nodeBridge.env === 'electron' ? 'electron' : navigator.userAgent }),
             ...(backendInfo.length ? [h('br'), '·'] : []),
             ...(backendInfo.length ? [h('br'), ...backendInfo] : []),
         ]),
         buttons: [
-            { text: '关闭', role: 'cancel' },
+            { text: t('envInfo.close'), role: 'cancel' },
         ]
     });
 }

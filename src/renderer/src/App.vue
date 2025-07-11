@@ -1,7 +1,8 @@
 <script setup lang="ts">
 // 以下这句对全局有效
 /// <reference types="vite-svg-loader" />
-import { onMounted } from 'vue'
+import { onMounted } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useAppStore } from '@renderer/stores/appStore';
 import { handleDownloadStatusChange, handleDownloadProgress, handleCloseConfirm } from '@renderer/stores/eventsHandler';
 import { TransferStatus } from '@common/types';
@@ -13,6 +14,7 @@ import nodeBridge from './bridges/nodeBridge';
 import MainFrame from './containers/MainFrame.vue';
 
 const appStore = useAppStore();
+const { t } = useI18n();
 
 onMounted(async () => {
 	// 挂载调试变量
@@ -79,7 +81,7 @@ onMounted(async () => {
 		const storedBuildNumber = await nodeBridge.localStorage.get('version.buildNumber');
 		if (!storedBuildNumber || storedBuildNumber != buildNumber) {
 			Popup({
-				message: `欢迎使用 FFBox ${version}！`,
+				message: t('app.welcomeMessage', { version }),
 				level: 0,
 			});
 			nodeBridge.localStorage.set('version.buildNumber', buildNumber);

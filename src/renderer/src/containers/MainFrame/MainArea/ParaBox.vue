@@ -18,7 +18,8 @@ import IconUpArrow from '@renderer/assets/mainArea/paraBox/uparrow.svg?component
 
 const appStore = useAppStore();
 const sidebarIcons = [IconSidebarFavorite, IconSidebarInput, IconSidebarVideo, IconSidebarAudio, IconSidebarEffect, IconSidebarOutput];
-const sidebarTexts = ['快捷', '输入', '视频', '音频', '效果', '输出'];
+// const sidebarTexts = ['快捷', '输入', '视频', '音频', '效果', '输出']; // Replaced by i18n
+const sidebarKeys = ['quick', 'input', 'video', 'audio', 'effect', 'output'];
 const sidebarColors = computed(() => 
 	appStore.frontendSettings.colorTheme === 'themeLight'
 		? ['hwb(45 0% 5%)', 'hwb(195 0% 10%)', 'hwb(285 10% 0%)', 'hwb(120 0% 20%)', 'hwb(315 10% 5%)', 'hwb(0 30% 0%)']
@@ -71,18 +72,18 @@ const getButtonColorStyle = (index: number) => ({ color: appStore.paraSelected =
 		<div class="upper" :style="{ height: appStore.showGlobalParams ? '64px' : undefined }">
 			<div class="devider" :ref="(el) => deviderRef = el as Element">
 				<div class="buttons" @mousedown="handleDragStart" @touchstart="handleDragStart">
-					<button v-for="index in [0, 1, 2, 3, 4, 5]" :key="index" :aria-label="sidebarTexts[index] + '参数'" @click="handleParaButtonClicked(index)">
+					<button v-for="(key, index) in sidebarKeys" :key="key" :aria-label="$t('sidebar.' + key) + $t('globalParams')" @click="handleParaButtonClicked(index)">
 						<component :is="sidebarIcons[index]" :style="getButtonColorStyle(index)" />
-						<span :style="getButtonColorStyle(index)">{{ sidebarTexts[index] }}</span>
+						<span :style="getButtonColorStyle(index)">{{ $t('sidebar.' + key) }}</span>
 					</button>
 				</div>
-				<button class="showGlobalButton" @mousedown="appStore.showGlobalParams = !appStore.showGlobalParams" aria-label="展示全局参数开关">
-					<span>全局参数</span>
+				<button class="showGlobalButton" @mousedown="appStore.showGlobalParams = !appStore.showGlobalParams" :aria-label="$t('showGlobalParams')">
+					<span>{{ $t('globalParams') }}</span>
 					<IconUpArrow :style="{ transform: appStore.showGlobalParams ? undefined : 'rotate(-180deg)' }" />
 				</button>
 			</div>
 			<div class="globalparam" :style="{ opacity: appStore.showGlobalParams ? 1 : 0 }">
-				<textarea readonly aria-label="全局参数" :value="globalParamsText"></textarea>
+				<textarea readonly :aria-label="$t('globalParams')" :value="globalParamsText"></textarea>
 			</div>
 		</div>
 		<div class="lower">

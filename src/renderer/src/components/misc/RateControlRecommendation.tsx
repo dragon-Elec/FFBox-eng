@@ -1,16 +1,19 @@
-import { computed, defineComponent, onMounted, ref } from 'vue';
+import { defineComponent, onMounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import Msgbox from '../Msgbox/Msgbox';
 
 export function showRateControlRecommendation() {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	(document.activeElement as any)?.blur();
+	const { t } = useI18n();
 	// 如果是从菜单通过 Enter 进入的，不加延迟的情况下，会连带触发 Msgbox 的键盘事件监听，因此需要加延迟
 	setTimeout(() => {
 		Msgbox({
 			container: document.body,
-			title: '📚 FFBox 本地知识库',
+			title: t('rateControlDoc.title'),
 			content: <Comp />,
 			buttons: [
-				{ text: '关闭', role: 'cancel' },
+				{ text: t('rateControlDoc.close'), role: 'cancel' },
 			]
 		});
 	}, 0);

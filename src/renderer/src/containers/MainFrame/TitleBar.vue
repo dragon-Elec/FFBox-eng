@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useAppStore } from '@renderer/stores/appStore';
 import { TaskStatus, WorkingStatus } from '@common/types';
 import { Server } from '@renderer/types';
@@ -10,6 +11,7 @@ import { showServerConfig } from '@renderer/components/misc/ServerConfig';
 import IconX from '@renderer/assets/×.svg?component';
 
 const appStore = useAppStore();
+const { t } = useI18n();
 
 const serverStyle = computed(() => {
 	const map: {
@@ -75,18 +77,18 @@ const handleTabContextMenu = (event: MouseEvent, server: Server) => {
 	showMenu({
 		menu: [
 			...(server.entity.status === ServiceBridgeStatus.Idle ? [
-				{ type: 'normal', label: '未连接', value: '未连接', disabled: true },
+				{ type: 'normal', label: t('titlebar.notConnected'), value: 'notConnected', disabled: true },
 			] : []),
 			...(server.entity.status !== ServiceBridgeStatus.Idle ? [
 				{ type: 'normal', label: `${server.entity.ip}:${server.entity.port}`, value: 'ipport', disabled: true },
 			] : []),
 			...(server.entity.ip !== 'localhost' && appStore.servers.length > 1 ? [
 				{ type: 'separator' },
-				{ type: 'normal', label: server.entity.status === ServiceBridgeStatus.Idle ? '关闭' : '断开连接并关闭', value: '断开连接并关闭', onClick: () => handleTabCloseClicked(server.data.id, event) },
+				{ type: 'normal', label: server.entity.status === ServiceBridgeStatus.Idle ? t('titlebar.close') : t('titlebar.disconnectAndClose'), value: 'disconnectAndClose', onClick: () => handleTabCloseClicked(server, event) },
 			] : []),
 			...(server.entity.ip === 'localhost' ? [
 				{ type: 'separator' },
-				{ type: 'normal', label: '服务器配置', value: '服务器配置', disabled: server.entity.status !== ServiceBridgeStatus.Connected, onClick: () => showServerConfig(server.data.id) },
+				{ type: 'normal', label: t('titlebar.serverConfig'), value: 'serverConfig', disabled: server.entity.status !== ServiceBridgeStatus.Connected, onClick: () => showServerConfig(server.data.id) },
 			] : []),
 		],
 		type: 'action',
@@ -96,9 +98,12 @@ const handleTabContextMenu = (event: MouseEvent, server: Server) => {
 };
 
 // 点击关闭标签页
-const handleTabCloseClicked = (server: Server, event: MouseEvent) => {
-	if (server.entity.ip !== 'localhost' && appStore.servers.length > 1) {
-		appStore.removeServer(server.data.id);
+const handleTabCloseClicked = (serverOrId: Server | string, event: MouseEvent) => {
+	const serverId = typeof serverOrId === 'string' ? serverOrId : serverOrId.data.id;
+	const server = typeof serverOrId === 'string' ? appStore.servers.find(s => s.data.id === serverOrId) : serverOrId;
+
+	if (server && server.entity.ip !== 'localhost' && appStore.servers.length > 1) {
+		appStore.removeServer(serverId);
 		event.stopPropagation();
 	}
 };

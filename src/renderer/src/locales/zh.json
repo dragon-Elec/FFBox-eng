@@ -1,0 +1,94 @@
+{
+  "sidebar": {
+    "quick": "快捷",
+    "input": "输入",
+    "video": "视频",
+    "audio": "音频",
+    "effect": "效果",
+    "output": "输出"
+  },
+  "globalParams": "全局参数",
+  "showGlobalParams": "展示全局参数开关",
+  "serverConfig": {
+    "title": "本地服务器配置",
+    "maxTasks": "同时转码任务数量",
+    "maxTasksTooltip": "开始转码队列后，会使所有未完成任务进入排队状态，并持续挑选最靠前的任务开始运行。同时运行的任务数量受此控制",
+    "maxTasksTooltipWithLimit": "开始转码队列后，会使所有未完成任务进入排队状态，并持续挑选最靠前的任务开始运行。同时运行的任务数量受此控制（您的用户等级最高支持同时运行 {limit} 个任务）",
+    "preserveTasks": "保留未完成任务",
+    "preserveTasksTooltip": "若转码服务意外退出，下次运行时将自动将转码途中未完成任务恢复到任务列表",
+    "ffmpegPath": "ffmpeg 路径",
+    "ffmpegPathPlaceholder": "建议留空，自动检测",
+    "ffmpegPathTooltip": "合法路径的规则受到操作系统影响。留空状态下，FFBox 将按操作系统自动检查 ffmpeg 位置",
+    "userConfig": "用户配置",
+    "save": "保存",
+    "cancel": "取消"
+  },
+  "titlebar": {
+    "serverConfig": "服务器配置",
+    "notConnected": "未连接",
+    "disconnectAndClose": "断开连接并关闭",
+    "close": "关闭"
+  },
+  "app": {
+    "welcomeMessage": "欢迎使用 FFBox {version}！"
+  },
+  "addTasks": {
+    "title": "添加任务",
+    "confirm": "好",
+    "cancel": "取消",
+    "expandingPaths": "正在展开路径",
+    "calculating": "正在统计中",
+    "noFiles": "您未填入文件",
+    "stats": "您已填入{localFiles}{localDirs}{remoteUrls}{unknownFiles}。",
+    "statsLocalFiles": " {count} 个本地{platformPath}",
+    "statsLocalFiles_plural": " {count} 个本地{platformPathPlural}",
+    "statsLocalDirs": " {count} 个本地文件夹",
+    "statsLocalDirs_plural": " {count} 个本地文件夹",
+    "statsRemoteUrls": " {count} 个远程路径",
+    "statsRemoteUrls_plural": " {count} 个远程路径",
+    "statsUnknownFiles": " {count} 个未知文件",
+    "statsUnknownFiles_plural": " {count} 个未知文件",
+    "limitHint66": "（上限 66 个）",
+    "limitHint99": "（上限 99 个）",
+    "addFilesButton": "添加文件",
+    "browserDropHint": "网页版无法将文件拖入文本框，请直接将文件拖入任务列表进行上传😊",
+    "electronInputHint": "此输入框仅用于直接控制服务器进行任务添加\n若需处理本地文件请从菜单选择「任务」→「添加任务（选择文件）」",
+    "waitingForStats": "等待统计",
+    "iteratingPaths": "开始遍历"
+  },
+  "envInfo": {
+    "title": "版本信息",
+    "close": "关闭",
+    "frontendVersion": "前端版本：{version}",
+    "frontendEnv": "前端 OS 环境：{platform}",
+    "frontendEngine": "前端引擎环境：{engine}",
+    "backendConnectionType": "当前后端连接形式：{type}",
+    "connectionTypeLocal": "本地",
+    "connectionTypeRemote": "远程",
+    "backendVersion": "当前后端版本：{version}",
+    "backendEnv": "当前后端 OS 环境：{os}",
+    "backendFFmpeg": "当前后端 ffmpeg：{version}{encoders}",
+    "scanningEncoders": "（正在扫描编码器）",
+    "encoderStats": "（{videoCount} 个视频编码器，{audioCount} 个音频编码器）"
+  },
+  "rateControlDoc": {
+    "title": "📚 FFBox 本地知识库",
+    "close": "关闭"
+  },
+  "serverUserConfig": {
+    "title": "本地服务器用户配置",
+    "save": "保存",
+    "cancel": "取消",
+    "username": "用户名",
+    "password": "密码",
+    "maxLevel": "最高用户等级",
+    "actions": "操作",
+    "adminHint": "（管理员空账号）",
+    "adminTooltip": "仅在本地模式下可以空账号登录。空账号即为管理员",
+    "change": "更改",
+    "add": "　+　",
+    "levelTooltip": "决定用户可用的功能范围。大于服务器自身等级的数字表示可使用服务器支持的全部功能范围。目前此功能无用",
+    "delete": "删除",
+    "addUser": "添加用户"
+  }
+}
